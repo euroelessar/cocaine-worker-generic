@@ -24,18 +24,18 @@ INCLUDE_DIRECTORIES(
 INCLUDE_DIRECTORIES(BEFORE
     ${PROJECT_SOURCE_DIR}/include)
 
-ADD_EXECUTABLE(cocaine-generic-worker
+ADD_EXECUTABLE(cocaine-worker-generic
     src/worker
     src/main)
 
-TARGET_LINK_LIBRARIES(cocaine-generic-worker
+TARGET_LINK_LIBRARIES(cocaine-worker-generic
     boost_program_options-mt
     cocaine-core)
 
-SET_TARGET_PROPERTIES(cocaine-generic-worker PROPERTIES
+SET_TARGET_PROPERTIES(cocaine-worker-generic PROPERTIES
     COMPILE_FLAGS "-std=c++0x")
 
 INSTALL(
     TARGETS
-        cocaine-generic-worker
+        cocaine-worker-generic
     RUNTIME DESTINATION bin COMPONENT runtime)
