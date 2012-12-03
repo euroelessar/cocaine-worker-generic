@@ -98,7 +98,7 @@ int main(int argc, char * argv[]) {
     std::unique_ptr<context_t> context;
 
     try {
-        context.reset(new context_t(vm["configuration"].as<std::string>()));
+        context.reset(new context_t(vm["configuration"].as<std::string>(), "slave"));
     } catch(const std::exception& e) {
         std::cerr << "Error: unable to initialize the context - " << e.what() << std::endl;
         return EXIT_FAILURE;
