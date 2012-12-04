@@ -130,16 +130,15 @@ worker_t::worker_t(context_t& context,
                    worker_config_t config):
     m_context(context),
     m_log(context.log(
-        cocaine::format("app/%1%", config.name)
+        cocaine::format("app/%1%", config.app)
     )),
     m_id(config.uuid),
-    m_name(config.name),
     m_channel(context, ZMQ_DEALER, m_id)
 {
     std::string endpoint = cocaine::format(
         "ipc://%1%/%2%",
-        m_context.config.ipc_path,
-        m_name
+        m_context.config.path.runtime,
+        config.app
     );
     
     m_channel.connect(endpoint);
@@ -155,10 +154,10 @@ worker_t::worker_t(context_t& context,
     // Launching the app
 
     try {
-        m_manifest.reset(new manifest_t(m_context, m_name));
+        m_manifest.reset(new manifest_t(m_context, config.app));
         m_profile.reset(new profile_t(m_context, config.profile));
         
-        fs::path path(fs::path(m_context.config.spool_path) / m_name);
+        fs::path path = fs::path(m_context.config.path.spool) / config.app;
          
         m_sandbox = m_context.get<api::sandbox_t>(
             m_manifest->sandbox.type,

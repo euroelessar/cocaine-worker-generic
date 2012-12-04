@@ -50,11 +50,11 @@ int main(int argc, char * argv[]) {
     worker_config_t worker_config;
 
     slave_options.add_options()
-        ("slave:app", po::value<std::string>
-            (&worker_config.name))
-        ("slave:profile", po::value<std::string>
+        ("app", po::value<std::string>
+            (&worker_config.app))
+        ("profile", po::value<std::string>
             (&worker_config.profile))
-        ("slave:uuid", po::value<std::string>
+        ("uuid", po::value<std::string>
             (&worker_config.uuid));
 
     combined_options.add(general_options)

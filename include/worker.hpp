@@ -31,7 +31,7 @@
 namespace cocaine { namespace worker {
 
 struct worker_config_t {
-    std::string name;
+    std::string app;
     std::string profile;
     std::string uuid;
 };
@@ -79,7 +79,6 @@ class worker_t:
         // Configuration
 
         const unique_id_t m_id;
-        const std::string m_name;
 
         // Engine I/O
 
