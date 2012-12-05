@@ -28,7 +28,7 @@
 
 #include <cocaine/api/stream.hpp>
 
-namespace cocaine { namespace worker {
+namespace cocaine { namespace engine {
 
 struct worker_config_t {
     std::string app;
@@ -74,7 +74,7 @@ class worker_t:
 
     private:
         context_t& m_context;
-        boost::shared_ptr<logging::logger_t> m_log;
+        std::unique_ptr<logging::log_t> m_log;
 
         // Configuration
 
@@ -129,6 +129,6 @@ worker_t::send(Args&&... args) {
     m_channel.send<Event>(std::forward<Args>(args)...);
 }
 
-}} // namespace cocaine::worker
+}} // namespace cocaine::engine
 
 #endif

@@ -32,8 +32,9 @@
 #include <boost/filesystem/path.hpp>
 
 using namespace cocaine;
+using namespace cocaine::engine;
 using namespace cocaine::io;
-using namespace cocaine::worker;
+using namespace cocaine::logging;
 
 namespace fs = boost::filesystem;
 
@@ -129,9 +130,7 @@ namespace {
 worker_t::worker_t(context_t& context,
                    worker_config_t config):
     m_context(context),
-    m_log(context.log(
-        cocaine::format("app/%1%", config.app)
-    )),
+    m_log(new log_t(context, cocaine::format("app/%s", config.app))),
     m_id(config.uuid),
     m_channel(context, ZMQ_DEALER, m_id)
 {
