@@ -29,7 +29,8 @@
 #include <boost/program_options.hpp>
 
 using namespace cocaine;
-using namespace cocaine::worker;
+using namespace cocaine::engine;
+using namespace cocaine::logging;
 
 namespace po = boost::program_options;
 
@@ -114,8 +115,12 @@ int main(int argc, char * argv[]) {
             )
         );
     } catch(const std::exception& e) {
+        std::unique_ptr<log_t> log(
+            new log_t(*context, "main")
+        );
+        
         COCAINE_LOG_ERROR(
-            context->log("main"),
+            log,
             "unable to start the worker - %s",
             e.what()
         );
