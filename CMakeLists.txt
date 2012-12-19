@@ -16,7 +16,7 @@ FIND_PACKAGE(Boost 1.40.0 REQUIRED
 
 INCLUDE(cmake/locate_library.cmake)
 
-LOCATE_LIBRARY(LIBCOCAINE "cocaine/context.hpp" "cocaine-common")
+LOCATE_LIBRARY(LIBCOCAINE "cocaine/context.hpp" "cocaine-core")
 
 INCLUDE_DIRECTORIES(
     ${LIBCOCAINE_INCLUDE_DIRS})
