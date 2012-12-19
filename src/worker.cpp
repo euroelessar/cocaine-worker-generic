@@ -135,7 +135,7 @@ worker_t::worker_t(context_t& context,
     m_channel(context, ZMQ_DEALER, m_id)
 {
     std::string endpoint = cocaine::format(
-        "ipc://%1%/%2%",
+        "ipc://%1%/engines/%2%",
         m_context.config.path.runtime,
         config.app
     );
@@ -207,7 +207,7 @@ worker_t::on_heartbeat(ev::timer&, int) {
         options::send_timeout
     > option(m_channel, 0);
     
-    send<rpc::ping>();
+    send<rpc::heartbeat>();
 }
 
 void
@@ -249,7 +249,7 @@ worker_t::process() {
         );
 
         switch(message_id) {
-            case event_traits<rpc::pong>::id:
+            case event_traits<rpc::heartbeat>::id:
                 m_disown_timer.stop();
                 m_disown_timer.start(m_profile->heartbeat_timeout);
                 

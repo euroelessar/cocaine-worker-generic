@@ -82,12 +82,7 @@ class worker_t:
 
         // Engine I/O
 
-        typedef io::channel<
-            io::tags::rpc_tag,
-            io::policies::unique
-        > rpc_channel_t;
-
-        rpc_channel_t m_channel;
+        io::unique_channel_t m_channel;
         
         // Event loop
 
