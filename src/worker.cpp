@@ -348,7 +348,6 @@ worker_t::process() {
 
     // Feed the event loop.
     m_loop.feed_fd_event(m_channel.fd(), ev::READ);
-
 }
 
 void
