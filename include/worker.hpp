@@ -110,7 +110,7 @@ class worker_t:
     #else
         typedef std::map<
     #endif
-            unique_id_t,
+            uint64_t,
             io_pair_t
         > stream_map_t;
 
