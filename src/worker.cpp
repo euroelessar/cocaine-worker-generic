@@ -42,7 +42,7 @@ namespace {
     struct upstream_t:
         public api::stream_t
     {
-        upstream_t(const unique_id_t& id,
+        upstream_t(uint64_t id,
                    worker_t * const worker):
             m_id(id),
             m_worker(worker),
@@ -115,7 +115,7 @@ namespace {
         }
 
     private:
-        const unique_id_t m_id;
+        const uint64_t m_id;
         worker_t * const m_worker;
 
         enum class state_t: int {
@@ -229,7 +229,7 @@ worker_t::process() {
         // TEST: Ensure that we haven't missed something in a previous iteration.
         BOOST_ASSERT(!m_channel.more());
        
-        int message_id = -1;
+        int message_id;
 
         {
             scoped_option<
@@ -256,7 +256,7 @@ worker_t::process() {
                 break;
 
             case event_traits<rpc::invoke>::id: {
-                unique_id_t session_id(uninitialized);
+                uint64_t session_id;
                 std::string event;
 
                 m_channel.recv<rpc::invoke>(session_id, event);
@@ -282,7 +282,7 @@ worker_t::process() {
             }
 
             case event_traits<rpc::chunk>::id: {
-                unique_id_t session_id(uninitialized);
+                uint64_t session_id;
                 std::string message;
 
                 m_channel.recv<rpc::chunk>(session_id, message);
@@ -307,7 +307,7 @@ worker_t::process() {
             }
 
             case event_traits<rpc::choke>::id: {
-                unique_id_t session_id(uninitialized);
+                uint64_t session_id;
 
                 m_channel.recv<rpc::choke>(session_id);
 
