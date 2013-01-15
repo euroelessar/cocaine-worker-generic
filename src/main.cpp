@@ -69,10 +69,10 @@ int main(int argc, char * argv[]) {
             vm);
         po::notify(vm);
     } catch(const po::unknown_option& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "ERROR: " << e.what() << std::endl;
         return EXIT_FAILURE;
     } catch(const po::ambiguous_option& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "ERROR: " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -90,7 +90,7 @@ int main(int argc, char * argv[]) {
     // Validation
 
     if(!vm.count("configuration")) {
-        std::cerr << "Error: no configuration file location has been specified." << std::endl;
+        std::cerr << "ERROR: no configuration file location has been specified." << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -101,7 +101,7 @@ int main(int argc, char * argv[]) {
     try {
         context.reset(new context_t(vm["configuration"].as<std::string>(), "slave"));
     } catch(const std::exception& e) {
-        std::cerr << "Error: unable to initialize the context - " << e.what() << std::endl;
+        std::cerr << "ERROR: unable to initialize the context - " << e.what() << std::endl;
         return EXIT_FAILURE;
     }
 
