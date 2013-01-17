@@ -1,3 +1,9 @@
+cocaine-worker-generic (0.10.0-b5) lucid; urgency=low
+
+  * Various cool stuff.
+
+ -- Andrey Sibiryov <kobolog@yandex-team.ru>  Tue, 15 Jan 2013 21:56:46 +0400
+
 cocaine-worker-generic (0.10.0) lucid; urgency=low
 
   * Workers are now in a separate repositories.
