@@ -116,12 +116,15 @@ class worker_t:
 
         // Session streams.
         stream_map_t m_streams;
+
+        // Message serializer.
+        io::codec_t m_codec;
 };
 
 template<class Event, typename... Args>
 void
 worker_t::send(Args&&... args) {
-    m_channel.send<Event>(std::forward<Args>(args)...);
+    m_channel.send(m_codec.pack<Event>(std::forward<Args>(args)...));
 }
 
 }} // namespace cocaine::engine
