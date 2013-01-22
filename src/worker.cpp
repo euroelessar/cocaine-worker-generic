@@ -64,7 +64,6 @@ namespace {
             switch(m_state) {
                 case state_t::open:
                     send<rpc::chunk>(std::string(chunk, size));
-                    
                     break;
 
                 case state_t::closed:
@@ -225,7 +224,7 @@ void
 worker_t::process() {
     int counter = defaults::io_bulk_size;
 
-    std::string blob;
+    zmq::message_t blob;
     io::message_t message;
 
     while(counter--) {
@@ -234,7 +233,7 @@ worker_t::process() {
                 options::receive_timeout
             > option(m_channel, 0);
 
-            if(!m_channel.recv(io::protect(blob))) {
+            if(!m_channel.recv(blob)) {
                 return;
             }
         }

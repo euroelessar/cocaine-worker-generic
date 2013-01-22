@@ -124,9 +124,12 @@ class worker_t:
 template<class Event, typename... Args>
 void
 worker_t::send(Args&&... args) {
-    m_channel.send(
-        io::protect(m_codec.pack<Event>(std::forward<Args>(args)...))
-    );
+    std::string blob = m_codec.pack<Event>(std::forward<Args>(args)...);
+    zmq::message_t msg(blob.size());
+
+    memcpy(msg.data(), blob.data(), blob.size());
+
+    m_channel.send(msg);
 }
 
 }} // namespace cocaine::engine
