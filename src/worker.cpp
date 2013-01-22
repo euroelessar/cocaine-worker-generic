@@ -225,30 +225,30 @@ void
 worker_t::process() {
     int counter = defaults::io_bulk_size;
 
-    do {
-        // TEST: Ensure that we haven't missed something in a previous iteration.
-        BOOST_ASSERT(!m_channel.more());
-       
-        int message_id;
+    std::string blob;
+    io::message_t message;
 
+    while(counter--) {
         {
             scoped_option<
                 options::receive_timeout
             > option(m_channel, 0);
 
-            if(!m_channel.recv(message_id)) {
+            if(!m_channel.recv(io::protect(blob))) {
                 return;
             }
         }
+
+        message = m_codec.unpack(blob);
 
         COCAINE_LOG_DEBUG(
             m_log,
             "worker %s received type %d message",
             m_id,
-            message_id
+            message.id()
         );
 
-        switch(message_id) {
+        switch(message.id()) {
             case event_traits<rpc::heartbeat>::id:
                 m_disown_timer.stop();
                 m_disown_timer.start(m_profile->heartbeat_timeout);
@@ -259,7 +259,7 @@ worker_t::process() {
                 uint64_t session_id;
                 std::string event;
 
-                m_channel.recv<rpc::invoke>(session_id, event);
+                message.as<rpc::invoke>(session_id, event);
 
                 boost::shared_ptr<api::stream_t> upstream(
                     boost::make_shared<upstream_t>(session_id, this)
@@ -283,9 +283,9 @@ worker_t::process() {
 
             case event_traits<rpc::chunk>::id: {
                 uint64_t session_id;
-                std::string message;
+                std::string chunk;
 
-                m_channel.recv<rpc::chunk>(session_id, message);
+                message.as<rpc::chunk>(session_id, chunk);
 
                 stream_map_t::iterator it(m_streams.find(session_id));
 
@@ -293,7 +293,7 @@ worker_t::process() {
                 // will be no active stream, so drop the message.
                 if(it != m_streams.end()) {
                     try {
-                        it->second.downstream->push(message.data(), message.size());
+                        it->second.downstream->push(chunk.data(), chunk.size());
                     } catch(const std::exception& e) {
                         it->second.upstream->error(invocation_error, e.what());
                         m_streams.erase(it);
@@ -309,7 +309,7 @@ worker_t::process() {
             case event_traits<rpc::choke>::id: {
                 uint64_t session_id;
 
-                m_channel.recv<rpc::choke>(session_id);
+                message.as<rpc::choke>(session_id);
 
                 stream_map_t::iterator it = m_streams.find(session_id);
 
@@ -339,12 +339,10 @@ worker_t::process() {
                     m_log,
                     "worker %s dropping unknown type %d message", 
                     m_id,
-                    message_id
+                    message.id()
                 );
-                
-                m_channel.drop();
         }
-    } while(--counter);
+    }
 
     // Feed the event loop.
     m_loop.feed_fd_event(m_channel.fd(), ev::READ);

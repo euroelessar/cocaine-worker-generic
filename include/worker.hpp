@@ -124,7 +124,9 @@ class worker_t:
 template<class Event, typename... Args>
 void
 worker_t::send(Args&&... args) {
-    m_channel.send(m_codec.pack<Event>(std::forward<Args>(args)...));
+    m_channel.send(
+        io::protect(m_codec.pack<Event>(std::forward<Args>(args)...))
+    );
 }
 
 }} // namespace cocaine::engine
