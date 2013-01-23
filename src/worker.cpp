@@ -270,7 +270,7 @@ worker_t::process() {
                         m_sandbox->invoke(event, upstream)
                     };
 
-                    m_streams.emplace(session_id, io);
+                    m_streams.insert(std::make_pair(session_id, io));
                 } catch(const std::exception& e) {
                     upstream->error(invocation_error, e.what());
                 } catch(...) {

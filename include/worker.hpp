@@ -105,11 +105,7 @@ class worker_t:
             boost::shared_ptr<api::stream_t> downstream;
         };
 
-    #if BOOST_VERSION >= 103600
-        typedef boost::unordered_map<
-    #else
         typedef std::map<
-    #endif
             uint64_t,
             io_pair_t
         > stream_map_t;
@@ -124,12 +120,8 @@ class worker_t:
 template<class Event, typename... Args>
 void
 worker_t::send(Args&&... args) {
-    std::string blob = m_codec.pack<Event>(std::forward<Args>(args)...);
-    zmq::message_t msg(blob.size());
-
-    memcpy(msg.data(), blob.data(), blob.size());
-
-    m_channel.send(msg);
+    zmq::message_t blob = m_codec.pack<Event>(std::forward<Args>(args)...);
+    m_channel.send(blob);
 }
 
 }} // namespace cocaine::engine
