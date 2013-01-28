@@ -224,7 +224,10 @@ void
 worker_t::process() {
     int counter = defaults::io_bulk_size;
 
-    zmq::message_t blob;
+    // RPC payload.
+    std::string blob;
+
+    // Deserialized message.
     io::message_t message;
 
     while(counter--) {
@@ -238,7 +241,7 @@ worker_t::process() {
             }
         }
 
-        message = m_codec.unpack(blob);
+        message = io::codec::unpack(blob);
 
         COCAINE_LOG_DEBUG(
             m_log,

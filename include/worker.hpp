@@ -23,6 +23,7 @@
 
 #include <cocaine/common.hpp>
 #include <cocaine/asio.hpp>
+#include <cocaine/io.hpp>
 #include <cocaine/rpc.hpp>
 #include <cocaine/unique_id.hpp>
 
@@ -82,7 +83,7 @@ class worker_t:
 
         // Engine I/O
 
-        io::unique_channel_t m_channel;
+        io::socket_t m_channel;
         
         // Event loop
 
@@ -112,16 +113,12 @@ class worker_t:
 
         // Session streams.
         stream_map_t m_streams;
-
-        // Message serializer.
-        io::codec_t m_codec;
 };
 
 template<class Event, typename... Args>
 void
 worker_t::send(Args&&... args) {
-    zmq::message_t blob = m_codec.pack<Event>(std::forward<Args>(args)...);
-    m_channel.send(blob);
+    m_channel.send(io::codec::pack<Event>(std::forward<Args>(args)...));
 }
 
 }} // namespace cocaine::engine
